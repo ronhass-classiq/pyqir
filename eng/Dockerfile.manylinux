@@ -52,7 +52,8 @@ RUN /bin/bash /tmp/Miniconda3.sh -b -p /usr/local/miniconda3
 
 RUN chown -R ${USER_UID}:${USER_GID} /usr/local/miniconda3
 
-RUN yum install -y llvm-devel clang
+RUN dnf install -y epel-release
+RUN yum install -y llvm14-devel clang
 ENV LLVM_SYS_140_PREFIX=/usr \
     LIBRARY_PATH="/usr/local/miniconda3/lib:${LIBRARY_PATH}" \
     LD_LIBRARY_PATH="/usr/local/miniconda3/lib:${LD_LIBRARY_PATH}"
