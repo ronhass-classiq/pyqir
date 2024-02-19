@@ -6,7 +6,7 @@ FROM quay.io/pypa/manylinux_2_28_aarch64
 ARG USERNAME=runner
 ARG USER_UID=1000
 ARG USER_GID=${USER_UID}
-ARG RUST_TOOLCHAIN=1.64.0
+ARG RUST_TOOLCHAIN=1.75.0
 
 # libcgroup created a new group that conflicts with the agent group id. 
 # To avoid this issue in the future, -o allows for non-unique group ids. 
