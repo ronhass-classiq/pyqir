@@ -1,7 +1,7 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
-FROM quay.io/pypa/manylinux2014_x86_64
+FROM quay.io/pypa/manylinux_2_28_aarch64
 
 ARG USERNAME=runner
 ARG USER_UID=1000
@@ -44,16 +44,18 @@ RUN python3.7 -m pip install --no-cache-dir cffi \
 
 USER root
 
-RUN yum install -y libffi-devel ninja-build ccache
+RUN yum install -y libffi-devel ninja-build
 
-ADD https://repo.anaconda.com/miniconda/Miniconda3-py39_4.10.3-Linux-x86_64.sh /tmp/Miniconda3.sh
+ADD https://repo.anaconda.com/miniconda/Miniconda3-py39_4.10.3-Linux-aarch64.sh /tmp/Miniconda3.sh
 
 RUN /bin/bash /tmp/Miniconda3.sh -b -p /usr/local/miniconda3
 
 RUN chown -R ${USER_UID}:${USER_GID} /usr/local/miniconda3
 
-RUN curl https://packages.microsoft.com/config/rhel/7/prod.repo | tee /etc/yum.repos.d/microsoft.repo && \
-    yum install -y powershell
+RUN yum install -y llvm-devel clang
+ENV LLVM_SYS_140_PREFIX=/usr \
+    LIBRARY_PATH="/usr/local/miniconda3/lib:${LIBRARY_PATH}" \
+    LD_LIBRARY_PATH="/usr/local/miniconda3/lib:${LD_LIBRARY_PATH}"
 
 USER $USERNAME
 
@@ -62,3 +64,4 @@ ENV PATH="/usr/local/miniconda3/bin:${PATH}"
 RUN conda init && \
     conda install -y -c conda-forge clang-11 libstdcxx-devel_linux-64 libgcc-devel_linux-64 && \
     cp /usr/local/miniconda3/bin/clang-11 /usr/local/miniconda3/bin/clang++-11
+RUN pip install maturin
